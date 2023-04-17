@@ -10,7 +10,8 @@ namespace project_managet_models.Models
         public double Salary { get; set; }
 
         [Required] public virtual JobTitle JobTitle { get; set; }
-        public virtual Employee Supervisor { get; set; }
+        public virtual Employee? Supervisor { get; set; }
+        public virtual ICollection<Employee> Supervisees { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
     }
 }
