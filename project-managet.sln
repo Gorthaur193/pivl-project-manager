@@ -10,7 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "project-managet-dblayer", "project-managet-dblayer\project-managet-dblayer.csproj", "{5FB10113-C04A-472B-88C4-A95C5F950245}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "project-managet-dblayer", "project-managet-dblayer\project-managet-dblayer.csproj", "{5FB10113-C04A-472B-88C4-A95C5F950245}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "project-managet-server", "project-managet-server\project-managet-server.csproj", "{9AEDF902-10BE-4764-9026-CF6AA3E19B44}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{6FA71538-6E3A-4F0F-B702-86F77F04A0E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +30,17 @@ Global
 		{5FB10113-C04A-472B-88C4-A95C5F950245}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FB10113-C04A-472B-88C4-A95C5F950245}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FB10113-C04A-472B-88C4-A95C5F950245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AEDF902-10BE-4764-9026-CF6AA3E19B44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AEDF902-10BE-4764-9026-CF6AA3E19B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AEDF902-10BE-4764-9026-CF6AA3E19B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AEDF902-10BE-4764-9026-CF6AA3E19B44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{904417C0-E0F4-4E8F-92A1-0FEB05457E5F} = {6FA71538-6E3A-4F0F-B702-86F77F04A0E9}
+		{5FB10113-C04A-472B-88C4-A95C5F950245} = {6FA71538-6E3A-4F0F-B702-86F77F04A0E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9973D03F-DD4D-4D17-A5A1-FBE9F79AB477}

@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /project-managet-dblayer/db_config.json
+/project-managet-dblayer/db_settings.json
