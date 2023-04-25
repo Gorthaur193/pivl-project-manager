@@ -17,6 +17,9 @@ csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
 csharp_indent_labels = one_less_than_current
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 
 [*.{cs,vb}]
 #### Naming styles ####
