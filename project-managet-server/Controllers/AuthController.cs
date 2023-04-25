@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using project_managet_dblayer;
+using project_managet_models;
+using project_managet_models.Models;
 using project_managet_server.Services;
 
 namespace project_managet_server.Controllers
@@ -12,7 +14,8 @@ namespace project_managet_server.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        LocalAuthService _localAuthService = LocalAuthService.GetInstance();
+        readonly LocalAuthService _localAuthService = LocalAuthService.GetInstance();
+        readonly EntityGateway _db = new();
 
         private Guid Token => Guid.Parse(Request.Headers["Token"] != string.Empty ? 
                                             Request.Headers["Token"]! : Guid.Empty.ToString());
@@ -69,11 +72,41 @@ namespace project_managet_server.Controllers
             }
         }
 
+        /// <summary>
+        /// register new Employee
+        /// </summary>
+        /// <param name="json">must contain login, password and name of new employee.</param>
+        /// <returns>creates user with "NEW" PersonalId</returns>
         [HttpPost]
         [Route("signup")]
         public IActionResult SignUp([FromBody] JObject json)
         {
-
+            try
+            {
+                if (_db.GetEmployees(x => x.Login == json["login"]?.ToString()).Any())
+                    throw new Exception("User with this login exists");
+                Employee potentialEmployee = new()
+                {
+                    Login = json["login"]?.ToString() ?? throw new Exception("Login is missing"),
+                    Passhash = Extentions.ComputeSHA256(json["password"]?.ToString() ?? throw new Exception("Password is missing")),
+                    Name = json["name"]?.ToString() ?? throw new Exception("Name is missing"),
+                    Role = Role.User,
+                    PersonalId = "NEW"
+                };
+                _db.AddOrUpdate(potentialEmployee);
+                return Ok(new
+                {
+                    status = "ok"
+                });
+            }
+            catch (Exception E)
+            {
+                return BadRequest(new
+                {
+                    status = "fail",
+                    message = E.Message
+                });
+            }
         }
     }
 }
