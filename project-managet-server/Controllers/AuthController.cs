@@ -73,6 +73,32 @@ namespace project_managet_server.Controllers
         }
 
         /// <summary>
+        /// Get user by it's token
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("user")]
+        public IActionResult GetUserInfo()
+        {
+            try
+            {
+                return Ok(new
+                {
+                    status = "ok",
+                    user = _localAuthService.GetUser(Token)
+                });
+            }
+            catch (Exception E)
+            {
+                return Unauthorized(new
+                {
+                    status = "fail",
+                    message = E.Message
+                });
+            }
+        }
+
+        /// <summary>
         /// register new Employee
         /// </summary>
         /// <param name="json">must contain login, password and name of new employee.</param>

@@ -4,7 +4,7 @@ using project_managet_models.Models;
 
 namespace project_managet_server.Services
 {
-    public class LocalAuthService
+    internal class LocalAuthService
     {
         class Session
         {
@@ -26,7 +26,6 @@ namespace project_managet_server.Services
         private readonly EntityGateway db = new();
         public Guid Auth(string username, string password)
         {
-            CleanSessions();
             var passhash = Extentions.ComputeSHA256(password);
             var potentialUser = db.GetEmployees(x => x.Login == username && x.Passhash == passhash).FirstOrDefault() ?? throw new Exception("User is not found.");
 
@@ -43,7 +42,13 @@ namespace project_managet_server.Services
         public Role GetRole(Guid token)
         {
             CleanSessions();
-            return Sessions.FirstOrDefault(x => x.Token == token)?.User.Role ?? throw new Exception("User is not found");
+            return Sessions.FirstOrDefault(x => x.Token == token)?.User.Role ?? throw new Exception("Session is not found");
+        }
+
+        public Employee GetUser(Guid token)
+        {
+            CleanSessions();
+            return Sessions.FirstOrDefault(x => x.Token == token)?.User ?? throw new Exception("Session is not found");
         }
     }
 }

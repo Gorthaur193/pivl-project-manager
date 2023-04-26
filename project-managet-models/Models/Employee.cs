@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace project_managet_models.Models
 {
@@ -7,7 +8,7 @@ namespace project_managet_models.Models
         public Guid Id { get; set; }
         [Required] [StringLength(50)] public string Name { get; set; }
         [Required] [StringLength(50)] public string Login { get; set; }
-        [Required] [StringLength(50)] public string Passhash { get; set; }
+        [JsonIgnore] [Required] [StringLength(50)] public string Passhash { get; set; }
         public Role Role { get; set; }
         [Required] [StringLength(50)] public string PersonalId { get; set; }
         public double Salary { get; set; }
