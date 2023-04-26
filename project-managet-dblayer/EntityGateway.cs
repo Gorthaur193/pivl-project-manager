@@ -4,7 +4,7 @@ namespace project_managet_dblayer
 {
     public partial class EntityGateway
     {
-        public ProjectManagerContext Context { get; set; }
+        public ProjectManagerContext Context { get; set; } = new();
 
         public void AddOrUpdate(params IEntity[] entities)
         {

@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /project-managet-dblayer/db_config.json
 /project-managet-dblayer/db_settings.json
+project-managet-server/db_config.json

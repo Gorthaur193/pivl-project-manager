@@ -3,7 +3,7 @@ using System.Text;
 
 namespace project_managet_server
 {
-    public static class Extentions
+    internal static class Extentions
     {
         public static string ComputeSHA256(string rawData)
         {

@@ -7,6 +7,8 @@ namespace project_managet_dblayer
 {
     public class ProjectManagerContext : DbContext
     {
+        private const string configPath = "db_config.json";
+
         public DbSet<Device> Devices { get; set; }  
         public DbSet<Project> Projects { get; set; }
         public DbSet<JobTitle> JobTitles { get; set; }
@@ -14,15 +16,15 @@ namespace project_managet_dblayer
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!File.Exists("db_config.json"))
+            if (!File.Exists(configPath))
                 throw new FileNotFoundException("Missing db_config.");
 
             optionsBuilder
                 .UseLazyLoadingProxies()
-                .UseSqlServer(((JObject.Parse(
-                    File.ReadAllText("db_config.json")))["connectionString"]?
+                .UseSqlServer(JObject.Parse(
+                    File.ReadAllText(configPath))["connectionString"]?
                 .ToString() 
-                ?? throw new KeyNotFoundException("connectionString is missing.")));
+                ?? throw new KeyNotFoundException("connectionString is missing."));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
