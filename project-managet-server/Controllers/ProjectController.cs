@@ -110,14 +110,15 @@ namespace project_managet_server.Controllers
         }
 
         /// <summary>
-        /// Add employees to project
+        /// change employees from project
         /// </summary>
+        /// <param name="action"></param>
         /// <param name="id">project id</param>
         /// <param name="employees">Json array of employees id</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("{id}/employees/add")]
-        public IActionResult AddEmployeesInProject([FromRoute] Guid id, [FromBody] Guid[] employees)
+        [Route("{id}/employees/{action}")]
+        public IActionResult ManipulateEmployeesInProject([FromRoute] ActionType action, [FromRoute] Guid id, [FromBody] Guid[] employees)
         {
             try
             {
@@ -128,42 +129,7 @@ namespace project_managet_server.Controllers
                         message = "You have no rights for this op."
                     });
 
-                _db.EmployeesInProject(ActionType.Add, id, employees);
-                return Ok(new
-                {
-                    status = "ok"
-                });
-            }
-            catch (Exception E)
-            {
-                return BadRequest(new
-                {
-                    status = "fail",
-                    message = E.Message
-                });
-            }
-        }
-
-        /// <summary>
-        /// remove employees from project
-        /// </summary>
-        /// <param name="id">project id</param>
-        /// <param name="employees">Json array of employees id</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("{id}/employees/remove")]
-        public IActionResult RemoveEmployeesInProject([FromRoute] Guid id, [FromBody] Guid[] employees)
-        {
-            try
-            {
-                if (LocalAuthService.GetInstance().GetRole(Token) != Role.Admin)
-                    return Unauthorized(new
-                    {
-                        status = "fail",
-                        message = "You have no rights for this op."
-                    });
-
-                _db.EmployeesInProject(ActionType.Remove, id, employees);
+                _db.EmployeesInProject(action, id, employees);
                 return Ok(new
                 {
                     status = "ok"
