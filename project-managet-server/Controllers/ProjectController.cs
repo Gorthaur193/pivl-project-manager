@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using project_managet_dblayer;
 using project_managet_models;
 using project_managet_models.Models;
@@ -92,7 +93,7 @@ namespace project_managet_server.Controllers
         /// </summary>
         [HttpGet]
         [Route("{id}/employees")]
-        public IActionResult GetEmployeesInProject([FromRoute]Guid id)
+        public IActionResult GetEmployeesInProject([FromRoute] Guid id)
         {
             var potentialProject = _db.GetProjects(x => x.Id == id).FirstOrDefault();
             return potentialProject is null ?
@@ -106,6 +107,76 @@ namespace project_managet_server.Controllers
                        status = "ok",
                        employees = potentialProject.Employees
                    });
+        }
+
+        /// <summary>
+        /// Add employees to project
+        /// </summary>
+        /// <param name="id">project id</param>
+        /// <param name="employees">Json array of employees id</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{id}/employees/add")]
+        public IActionResult AddEmployeesInProject([FromRoute] Guid id, [FromBody] Guid[] employees)
+        {
+            try
+            {
+                if (LocalAuthService.GetInstance().GetRole(Token) != Role.Admin)
+                    return Unauthorized(new
+                    {
+                        status = "fail",
+                        message = "You have no rights for this op."
+                    });
+
+                _db.EmployeesInProject(ActionType.Add, id, employees);
+                return Ok(new
+                {
+                    status = "ok"
+                });
+            }
+            catch (Exception E)
+            {
+                return BadRequest(new
+                {
+                    status = "fail",
+                    message = E.Message
+                });
+            }
+        }
+
+        /// <summary>
+        /// remove employees from project
+        /// </summary>
+        /// <param name="id">project id</param>
+        /// <param name="employees">Json array of employees id</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{id}/employees/remove")]
+        public IActionResult RemoveEmployeesInProject([FromRoute] Guid id, [FromBody] Guid[] employees)
+        {
+            try
+            {
+                if (LocalAuthService.GetInstance().GetRole(Token) != Role.Admin)
+                    return Unauthorized(new
+                    {
+                        status = "fail",
+                        message = "You have no rights for this op."
+                    });
+
+                _db.EmployeesInProject(ActionType.Remove, id, employees);
+                return Ok(new
+                {
+                    status = "ok"
+                });
+            }
+            catch (Exception E)
+            {
+                return BadRequest(new
+                {
+                    status = "fail",
+                    message = E.Message
+                });
+            }
         }
     }
 }

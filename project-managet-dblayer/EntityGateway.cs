@@ -18,29 +18,20 @@ namespace project_managet_dblayer
             Context.SaveChanges();
         }
 
-        public int AddEmployeesToProject(Project project, params Employee[] employees)
+        public int EmployeesInProject(ActionType action, Guid projectId, params Guid[] employeeIds)
         {
-            if (Context.Entry(project).State == EntityState.Detached)
-                project = Context.Projects.FirstOrDefault(x => x.Id == project.Id) ?? 
-                    throw new Exception("Project dooes not exist.");
-            List<Employee> employeesList = new(employees);
-            for (int i = 0; i < employees.Length; i++)
-            {
-                Employee employee = employeesList[i];
-                if (Context.Entry(employee).State == EntityState.Detached || 
-                    (employee = Context.Employees.FirstOrDefault(x => x.Id == employee!.Id)!) is null)
-                    employeesList.RemoveAt(i--);
-            }
-            var toChange = Context.Employees
-                .Where(x => employeesList.Contains(x))
-                .Except(project.Employees)
-                .ToArray();
+            var project = Context.Projects.FirstOrDefault(x => x.Id == projectId) 
+                                        ?? throw new Exception("Project is not found.");
+            var employees = Context.Employees.Where(x => employeeIds.Contains(x.Id)).Except(project.Employees).ToArray();
 
-
-
+            foreach (Employee employee in employees)
+                if (action == ActionType.Add)
+                    project.Employees.Add(employee);
+                else
+                    project.Employees.Remove(employee);
             AddOrUpdate(project);
             Context.SaveChanges();
-            return toChange.Length;
+            return employees.Length;
         }
 
         public void Delete(params IEntity[] entities)
@@ -69,5 +60,11 @@ namespace project_managet_dblayer
             GC.SuppressFinalize(this);
         }
         #endregion
+    }
+
+    public enum ActionType
+    {
+        Add,
+        Remove
     }
 }
