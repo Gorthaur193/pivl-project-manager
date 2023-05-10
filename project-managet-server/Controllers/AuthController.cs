@@ -17,7 +17,7 @@ namespace project_managet_server.Controllers
         readonly LocalAuthService _localAuthService = LocalAuthService.GetInstance();
         readonly EntityGateway _db = new();
 
-        private Guid Token => Guid.Parse(Request.Headers["Token"] != string.Empty ? 
+        private Guid Token => Guid.Parse(Request.Headers["Token"] != string.Empty ?
                                             Request.Headers["Token"]! : Guid.Empty.ToString());
 
         /// <summary>
@@ -30,10 +30,10 @@ namespace project_managet_server.Controllers
             try
             {
                 var token = _localAuthService.Auth(username, password);
-                return Ok(new 
-                { 
-                    status = "ok", 
-                    token 
+                return Ok(new
+                {
+                    status = "ok",
+                    token
                 });
             }
             catch (Exception E)
@@ -101,21 +101,21 @@ namespace project_managet_server.Controllers
         /// <summary>
         /// register new Employee
         /// </summary>
-        /// <param name="json">must contain login, password and name of new employee.</param>
+        /// <param name="userJson">must contain login, password and name of new employee.</param>
         /// <returns>creates user with "NEW" PersonalId</returns>
         [HttpPost]
         [Route("signup")]
-        public IActionResult SignUp([FromBody] JObject json)
+        public IActionResult SignUp([FromBody] JObject userJson)
         {
             try
             {
-                if (_db.GetEmployees(x => x.Login == json["login"]?.ToString()).Any())
+                if (_db.GetEmployees(x => x.Login == userJson["login"]?.ToString()).Any())
                     throw new Exception("User with this login exists");
                 Employee potentialEmployee = new()
                 {
-                    Login = json["login"]?.ToString() ?? throw new Exception("Login is missing"),
-                    Passhash = Extentions.ComputeSHA256(json["password"]?.ToString() ?? throw new Exception("Password is missing")),
-                    Name = json["name"]?.ToString() ?? throw new Exception("Name is missing"),
+                    Login = userJson["login"]?.ToString() ?? throw new Exception("Login is missing"),
+                    Passhash = Extentions.ComputeSHA256(userJson["password"]?.ToString() ?? throw new Exception("Password is missing")),
+                    Name = userJson["name"]?.ToString() ?? throw new Exception("Name is missing"),
                     Role = Role.User,
                     PersonalId = "NEW"
                 };

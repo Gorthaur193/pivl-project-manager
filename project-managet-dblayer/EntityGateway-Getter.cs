@@ -23,6 +23,5 @@ namespace project_managet_dblayer
             Context.Projects.Where(predicate).ToArray();
         public IEnumerable<Project> GetProjects() =>
             GetProjects(x => true);
-
     }
 }
