@@ -92,17 +92,17 @@ namespace project_managet_server.Controllers
         /// </summary>
         [HttpGet]
         [Route("{id}/{subdata}")]
-        public IActionResult GetSubdataFromProject([FromRoute] Guid id, [FromRoute] EmployeeSubdata subdata)
+        public IActionResult GetSubdataFromProject([FromRoute] Guid id, [FromRoute] ProjectSubdata subdata)
         {
             var potentialProject = _db.GetProjects(x => x.Id == id).FirstOrDefault();
             object res = subdata switch
             {
-                EmployeeSubdata.Employees => new
+                ProjectSubdata.Employees => new
                 {
                     status = "ok",
                     employees = potentialProject?.Employees
                 },
-                EmployeeSubdata.UsedDevices => new
+                ProjectSubdata.UsedDevices => new
                 {
                     status = "ok",
                     useddevices = potentialProject?.Devices
@@ -129,7 +129,7 @@ namespace project_managet_server.Controllers
         [HttpPost]
         [Route("{id}/{subdata}/{action}")]
         public IActionResult ManipulateSubDataInProject([FromRoute] ActionType action, 
-                                                        [FromRoute] EmployeeSubdata subdata, 
+                                                        [FromRoute] ProjectSubdata subdata, 
                                                         [FromRoute] Guid id, 
                                                         [FromBody] Guid[] subdataIds)
         {
@@ -143,8 +143,8 @@ namespace project_managet_server.Controllers
                     });
                 var changed = subdata switch
                 {
-                    EmployeeSubdata.Employees => _db.EmployeesInProject(action, id, subdataIds),
-                    EmployeeSubdata.UsedDevices => _db.DevicesInProject(action, id, subdataIds),
+                    ProjectSubdata.Employees => _db.EmployeesInProject(action, id, subdataIds),
+                    ProjectSubdata.UsedDevices => _db.DevicesInProject(action, id, subdataIds),
                     _ => throw new Exception($"{subdata} instance is not covered.")
                 };
                 return Ok(new
@@ -164,7 +164,7 @@ namespace project_managet_server.Controllers
         }
 
 #pragma warning disable CS1591 
-        public enum EmployeeSubdata
+        public enum ProjectSubdata
         {
             UsedDevices,
             Employees
