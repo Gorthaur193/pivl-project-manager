@@ -28,27 +28,6 @@ namespace project_managet_server.Controllers
                 jobtitles = _db.GetJobTitles()
             });
 
-        /// <summary>
-        /// Get job title by id. 
-        /// </summary>
-        [HttpGet] [Route("{id}")]
-        public IActionResult GetById(Guid id)
-        {
-            var potentialTitle = _db.GetJobTitles(x => x.Id == id).FirstOrDefault();
-            if (potentialTitle is not null)
-                return Ok(new
-                {
-                    status = "ok",
-                    jobtitles = potentialTitle
-                });
-            else
-                return NotFound(new
-                {
-                    status = "fail",
-                    message = $"There is no job title with {id} id"
-                });
-        }
-
         [HttpPost]
         public IActionResult PostJobTitle([FromBody] JobTitle jobTitle)
         {
