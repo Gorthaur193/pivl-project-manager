@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using project_managet_models;
 using project_managet_models.Models;
 
@@ -62,6 +64,7 @@ namespace project_managet_dblayer
         #endregion
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ActionType
     {
         Add,
