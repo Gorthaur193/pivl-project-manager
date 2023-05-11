@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace project_managet_models.Models
 {
@@ -12,6 +8,6 @@ namespace project_managet_models.Models
         public string Name { get; set; }
         public string Specs { get; set; }
 
-        public virtual ICollection<Project> Projects { get; set; }
+        [JsonIgnore] public virtual ICollection<Project> Projects { get; set; }
     }
 }

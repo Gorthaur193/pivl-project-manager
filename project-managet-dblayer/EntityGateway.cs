@@ -36,6 +36,22 @@ namespace project_managet_dblayer
             return employees.Length;
         }
 
+        public int DevicesInProject(ActionType action, Guid projectId, params Guid[] devicesIds) // sh*tcode
+        {
+            var project = Context.Projects.FirstOrDefault(x => x.Id == projectId)
+                                        ?? throw new Exception("Project is not found.");
+            var devices = Context.Devices.Where(x => devicesIds.Contains(x.Id)).Except(project.Devices).ToArray();
+
+            foreach (var employee in devices)
+                if (action == ActionType.Add)
+                    project.Devices.Add(employee);
+                else
+                    project.Devices.Remove(employee);
+            AddOrUpdate(project);
+            Context.SaveChanges();
+            return devices.Length;
+        }
+
         public void Delete(params IEntity[] entities)
         {
             Context.RemoveRange(entities);
@@ -64,7 +80,6 @@ namespace project_managet_dblayer
         #endregion
     }
 
-    [JsonConverter(typeof(StringEnumConverter))]
     public enum ActionType
     {
         Add,

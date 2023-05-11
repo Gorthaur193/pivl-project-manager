@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using project_managet_dblayer;
 using project_managet_models;
 using project_managet_models.Models;
@@ -50,8 +49,8 @@ namespace project_managet_server.Controllers
                 {
                     status = "ok",
                     project = potentialProject,
-                    employees = potentialProject.Employees,
-                    useddevices = potentialProject.Devices
+                    employees = potentialProject.Employees.Select(x => x.Id),
+                    useddevices = potentialProject.Devices.Select(x => x.Id)
                 });
         }
 
@@ -92,33 +91,47 @@ namespace project_managet_server.Controllers
         /// Employees on the project
         /// </summary>
         [HttpGet]
-        [Route("{id}/employees")]
-        public IActionResult GetEmployeesInProject([FromRoute] Guid id)
+        [Route("{id}/{subdata}")]
+        public IActionResult GetSubdataFromProject([FromRoute] Guid id, [FromRoute] EmployeeSubdata subdata)
         {
             var potentialProject = _db.GetProjects(x => x.Id == id).FirstOrDefault();
-            return potentialProject is null ?
-                   NotFound(new
-                   {
-                       status = "fail",
-                       message = $"There is no project with this id {id}!"
-                   }) :
-                   Ok(new
-                   {
-                       status = "ok",
-                       employees = potentialProject.Employees
-                   });
+            object res = subdata switch
+            {
+                EmployeeSubdata.Employees => new
+                {
+                    status = "ok",
+                    employees = potentialProject?.Employees
+                },
+                EmployeeSubdata.UsedDevices => new
+                {
+                    status = "ok",
+                    useddevices = potentialProject?.Devices
+                },
+                _ => throw new Exception($"{subdata} instance is not covered.")
+            };
+            return potentialProject is null
+                ? NotFound(new
+                {
+                    status = "fail",
+                    message = $"There is no project with this id {id}!"
+                })
+                : Ok(res);
         }
 
         /// <summary>
-        /// change employees from project
+        /// change subdataIds from project
         /// </summary>
         /// <param name="action"></param>
+        /// <param name="subdata"></param>
         /// <param name="id">project id</param>
-        /// <param name="employees">Json array of employees id</param>
+        /// <param name="subdataIds">Json array of subdataIds id</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("{id}/employees/{action}")]
-        public IActionResult ManipulateEmployeesInProject([FromRoute] ActionType action, [FromRoute] Guid id, [FromBody] Guid[] employees)
+        [Route("{id}/{subdata}/{action}")]
+        public IActionResult ManipulateSubDataInProject([FromRoute] ActionType action, 
+                                                        [FromRoute] EmployeeSubdata subdata, 
+                                                        [FromRoute] Guid id, 
+                                                        [FromBody] Guid[] subdataIds)
         {
             try
             {
@@ -128,11 +141,16 @@ namespace project_managet_server.Controllers
                         status = "fail",
                         message = "You have no rights for this op."
                     });
-
-                _db.EmployeesInProject(action, id, employees);
+                var changed = subdata switch
+                {
+                    EmployeeSubdata.Employees => _db.EmployeesInProject(action, id, subdataIds),
+                    EmployeeSubdata.UsedDevices => _db.DevicesInProject(action, id, subdataIds),
+                    _ => throw new Exception($"{subdata} instance is not covered.")
+                };
                 return Ok(new
                 {
-                    status = "ok"
+                    status = "ok",
+                    changed
                 });
             }
             catch (Exception E)
@@ -144,5 +162,13 @@ namespace project_managet_server.Controllers
                 });
             }
         }
+
+#pragma warning disable CS1591 
+        public enum EmployeeSubdata
+        {
+            UsedDevices,
+            Employees
+        }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 }
