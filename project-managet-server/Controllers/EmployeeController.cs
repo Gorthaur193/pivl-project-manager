@@ -115,7 +115,7 @@ namespace project_managet_server.Controllers
                 {
                     status = "fail",
                     message = E.Message
-                }));
+                });
             }
 
         }

@@ -18,6 +18,7 @@ namespace project_managet_dblayer
             Context.AddRange(toAdd);
             Context.UpdateRange(toUpdate);
             Context.SaveChanges();
+
         }
 
         public int EmployeesInProject(ActionType action, Guid projectId, params Guid[] employeeIds)
