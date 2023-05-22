@@ -43,7 +43,7 @@ app.UseCors(cors => cors
       .AllowAnyHeader()
       .SetIsOriginAllowed(origin => true)
       .AllowCredentials());
-
+app.UseWebSockets();
 
 app.UseHttpsRedirection();
 
